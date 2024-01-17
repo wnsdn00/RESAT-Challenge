@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>To-Do List</title>
+  <style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #fefefe;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  
+  .container {
+    max-width: 600px;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      text-align: center;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  #input-container {
+    display: flex;
+    margin-bottom: 20px;
+    justify-content: center;
+  }
+  
+  #input-container input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  #input-container select, #input-container button {
+    margin-left: 10px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #4ca8af;
+    color: white;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    background-color: #f9f9f9;
+    margin: 5px 0;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  #filter-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  #filter-container select {
+    border-radius: 5px;
+    padding: 5px;
+  }
+
+  #filter-container label, #filter-container select, #filter-container button {
+      margin-right: 10px;
+    }
+
+    #filter-container button {
+      background-color: #4ca8af;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>To-Do List</h1>
+    <div id="input-container">
+      <input type="text" id="taskInput" placeholder="할 일을 입력하세요...">
+      <select id="prioritySelect">
+        <option value="낮음">낮음</option>
+        <option value="보통">보통</option>
+        <option value="높음">높음</option>
+        <option value="아주 높음">아주 높음</option>
+      </select>
+      <button onclick="addTask()">할 일 추가하기</button>
+    </div>
+    <ul id="taskList"></ul>
+    <div id="filter-container">
+      <label>리스트 필터:
+        <select id="filterSelect" onchange="filterTasks()">
+          <option value="전체">전체</option>
+          <option value="해결">해결</option>
+          <option value="미해결">미해결</option>
+        </select>
+      </label>
+      <label>정렬 순서:
+        <select id="sortSelect" onchange="sortTasks()">
+          <option value="높은순">높은순</option>
+          <option value="낮은순">낮은순</option>
+        </select>
+      </label>
+    </div>
+  </div>
+  <script>
+    let tasks = [];
+
+function addTask() {
+  const taskInput = document.getElementById('taskInput');
+  const prioritySelect = document.getElementById('prioritySelect');
+  
+  const task = {
+    text: taskInput.value,
+    priority: prioritySelect.value,
+    completed: false
+  };
+
+  tasks.unshift(task);
+
+  updateTaskList();
+  taskInput.value = '';
+}
+
+function updateTaskList() {
+  const taskList = document.getElementById('taskList');
+  taskList.innerHTML = '';
+
+  const filterSelect = document.getElementById('filterSelect');
+  const sortSelect = document.getElementById('sortSelect');
+
+  let filteredTasks = [...tasks];
+
+  if (filterSelect.value !== '전체') {
+    filteredTasks = filteredTasks.filter(task => {
+      return (filterSelect.value === '해결' && task.completed) || 
+             (filterSelect.value === '미해결' && !task.completed);
+    });
+  }
+
+  if (sortSelect.value === '높은순') {
+    filteredTasks.sort((a, b) => b.priority.localeCompare(a.priority));
+  } else {
+    filteredTasks.sort((a, b) => a.priority.localeCompare(b.priority));
+  }
+
+  filteredTasks.forEach(task => {
+    const listItem = document.createElement('li');
+    listItem.innerHTML = `
+      <span>${task.text} - ${task.priority}</span>
+      <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleCompletion(${tasks.indexOf(task)})">
+      <button onclick="editTask(${tasks.indexOf(task)})">수정</button>
+    `;
+    taskList.appendChild(listItem);
+  });
+}
+
+function toggleCompletion(index) {
+  tasks[index].completed = !tasks[index].completed;
+  updateTaskList();
+}
+
+function editTask(index) {
+  const newText = prompt('수정할 내용을 입력하세요:', tasks[index].text);
+  if (newText !== null) {
+    tasks[index].text = newText;
+    updateTaskList();
+  }
+}
+
+function filterTasks() {
+  updateTaskList();
+}
+
+function sortTasks() {
+  updateTaskList();
+}
+
+updateTaskList();
+</script>
+</body>
+</html>
