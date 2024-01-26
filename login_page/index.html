@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login_page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="login-form">
+        <h1>login_page</h1>
+        <form id="login-form" onsubmit="return checkLogin()">
+            <div class="int-area">
+                <input type="text" name="id" id="id" autocomplete="off" required>
+                <label for="id">ID</label>
+            </div>
+            <div class="int-area">
+                <input type="password" name="pw" id="pw" autocomplete="off" required>
+                <label for="pw">PASSWORD</label>
+            </div>
+            <div class="btn-area">
+                <button id="btn" type="submit">로그인</button>
+            </div>
+        </form>
+        <div class="caption">
+            <a href="find_id.html" target="_parent">아이디 찾기</a> |
+            <a href="find_pw.html" target="_parent">비밀번호 찾기</a> | 
+            <a href="signup.html" target="_parent">회원가입</a>
+        </div>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        function checkLogin() {
+            var inputId = $('#id').val();
+            var inputPw = $('#pw').val();
+
+            // 임의로 설정한 ID와 PW
+            var correctId = "qwer";
+            var correctPw = "1234";
+
+            if (inputId === correctId && inputPw === correctPw) {
+                alert("로그인이 되었습니다");
+            } else {
+                alert("ID 혹은 PW가 잘못되었습니다");
+            }
+
+            return false; // 폼이 제출되지 않도록 반환값 false 설정
+        }
+    </script>
+</body>
+</html>
